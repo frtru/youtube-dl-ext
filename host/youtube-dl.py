@@ -4,6 +4,8 @@ import struct
 import sys
 import threading
 import queue
+import os
+import glob
 
 import youtube_dl
 try:
@@ -29,6 +31,14 @@ def get_download_options(info):
         options['outtmpl'] = '%(track)s.%(ext)s'
     return options
 
+def set_metadata(file_name, video_info):
+    if mp3library != None:
+        audiofile = mp3library.load(file_name)
+        audiofile.tag.artist = video_info['artist']
+        audiofile.tag.album = video_info['album']
+        audiofile.tag.title = video_info['track']
+        audiofile.tag.save()
+
 def Main():
   # while(1):
   #   # Unpack message length as 4 byte integer.
@@ -39,19 +49,17 @@ def Main():
   #   print(text)
 
     # TODO: Extract url from text
-    video_url = 'https://www.youtube.com/watch?v=nCBASt507WA'
+    video_url = 'https://www.youtube.com/watch?v=SFU1GeGFpzY'
 
     # Download video and set correct name
     info = get_info(video_url)
     options = get_download_options(info)
-
-    print('yes')
     with youtube_dl.YoutubeDL(options) as ydl:
         ydl.download([video_url])
 
-    # Set artist in metadata of mp3 file
-    if mp3library != None:
-        mp3library.load()
+    # Set artist in metadata of mp3 file    
+    file_name = max(glob.iglob('*.[Mm][Pp]3'), key=os.path.getctime) # Latest mp3 file in folder
+    set_metadata(file_name, info)
 
 if __name__ == '__main__':
   Main()
