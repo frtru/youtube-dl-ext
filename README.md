@@ -1,0 +1,2 @@
+- (FOR WINDOWS) Change path in host/manifest.json file for actual path where youtube-dl.exe is located
+- 

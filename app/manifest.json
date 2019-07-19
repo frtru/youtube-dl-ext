@@ -1,0 +1,15 @@
+{
+  "name": "Youtube-dl Extension",
+  "version": "1.0",
+  "description": "Extension for simplifying the use of youtube-dl",
+  "background": {
+    "scripts": ["main.js"],
+    "persistent": false
+  },
+  "browser_action": {},
+  "manifest_version": 2,
+  "permissions": [
+    "nativeMessaging",
+    "tabs"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "youtubedl",
+  "description": "youtubedl",
+  "path": "youtube-dl.bat",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://hiamfkohaojeklfjcimfgfkojdnfldmm/"
+  ]
+}
