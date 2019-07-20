@@ -6,4 +6,8 @@ TLDR: In one click, you can download the audio of a youtube video on your cell p
 - Only windows compatible at the moment. Need to develop an install shell script for unix/linux systems.
 - Most of the code is python and is located in the host folder.
 - I just realized there are javascript bindings for youtube-dl which would have been much easier to develop than using a native app in python and also more portable because the code would be directly embedded in the browser instead of having to register the host app as well.
-- Will create a queue/threading to handle all upcoming requests and not terminate the app when it is done after one request.
+- Will soon clean the code to create some other files and modules in the host app
+
+**ISSUES**
+- Output folder is hardcoded
+- Issue with str/bytes/encoding for sending messages back to the extension (in sendMessage function)
