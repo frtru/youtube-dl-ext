@@ -1,20 +1,0 @@
-2019-07-20 13:10:50,226 - youtube-dl-ext - INFO - Launching process on url : https://www.youtube.com/watch?v=a8HgdIJ_i7k
-2019-07-20 13:10:52,034 - youtube-dl-ext - DEBUG - [youtube] a8HgdIJ_i7k: Downloading webpage
-2019-07-20 13:10:52,569 - youtube-dl-ext - DEBUG - [youtube] a8HgdIJ_i7k: Downloading video info webpage
-2019-07-20 13:10:52,943 - youtube-dl-ext - DEBUG - [download] Destination: Moonlight in Vermont.m4a
-2019-07-20 13:10:52,943 - youtube-dl-ext - DEBUG - [download]   0.0% of 3.38MiB at 500.04KiB/s ETA 00:06
-2019-07-20 13:10:52,944 - youtube-dl-ext - DEBUG - [download]   0.1% of 3.38MiB at 999.99KiB/s ETA 00:03
-2019-07-20 13:10:52,944 - youtube-dl-ext - DEBUG - [download]   0.2% of 3.38MiB at  2.28MiB/s ETA 00:01 
-2019-07-20 13:10:52,944 - youtube-dl-ext - DEBUG - [download]   0.4% of 3.38MiB at  4.88MiB/s ETA 00:00 
-2019-07-20 13:10:52,952 - youtube-dl-ext - DEBUG - [download]   0.9% of 3.38MiB at  3.03MiB/s ETA 00:01 
-2019-07-20 13:10:52,963 - youtube-dl-ext - DEBUG - [download]   1.8% of 3.38MiB at  2.80MiB/s ETA 00:01 
-2019-07-20 13:10:52,978 - youtube-dl-ext - DEBUG - [download]   3.7% of 3.38MiB at  3.44MiB/s ETA 00:00 
-2019-07-20 13:10:53,009 - youtube-dl-ext - DEBUG - [download]   7.4% of 3.38MiB at  3.72MiB/s ETA 00:00 
-2019-07-20 13:10:53,070 - youtube-dl-ext - DEBUG - [download]  14.8% of 3.38MiB at  3.87MiB/s ETA 00:00 
-2019-07-20 13:10:53,194 - youtube-dl-ext - DEBUG - [download]  29.6% of 3.38MiB at  3.95MiB/s ETA 00:00 
-2019-07-20 13:10:53,442 - youtube-dl-ext - DEBUG - [download]  59.2% of 3.38MiB at  3.99MiB/s ETA 00:00 
-2019-07-20 13:10:53,783 - youtube-dl-ext - DEBUG - [download] 100.0% of 3.38MiB at  4.01MiB/s ETA 00:00 
-2019-07-20 13:10:53,785 - youtube-dl-ext - DEBUG - [download] 100% of 3.38MiB in 00:00                  
-2019-07-20 13:10:53,834 - youtube-dl-ext - DEBUG - [ffmpeg] Correcting container in "Moonlight in Vermont.m4a"
-2019-07-20 13:10:53,967 - youtube-dl-ext - DEBUG - [ffmpeg] Destination: Moonlight in Vermont.mp3
-2019-07-20 13:11:02,677 - youtube-dl-ext - DEBUG - Deleting original file Moonlight in Vermont.m4a (pass -k to keep)
