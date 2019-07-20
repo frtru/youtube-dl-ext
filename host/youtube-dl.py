@@ -1,25 +1,36 @@
 import struct
 import sys
-#import threading
-#import queue
+import threading
+import queue
 import json
 import os
 import shutil
 import glob
 import time
+import datetime
+import logging
+import re
+
+# Logger configuration
+logger = logging.getLogger('youtube-dl-ext')
+logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler("../logs/" + re.sub('-|:| ', '_', str(datetime.datetime.now())) + ".log")
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 import youtube_dl
 try:
     import eyed3
-    mp3library = eyed3
 except ImportError:
-    print
-    mp3library = None
+    logger.warning('eyed3 couldn\'t be imported. Won\'t be able to add metadata to files.')
 
+    
 if sys.platform == "win32":
-  import msvcrt
-  msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
-  msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
+    import msvcrt
+    msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
+    msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
 
 def get_info(video_url):
@@ -39,38 +50,32 @@ def get_download_options(info):
     return options
 
 def set_metadata(file_name, video_info):
-    if mp3library != None:
-        audiofile = mp3library.load(file_name)
+    if eyed3 != None:
+        audiofile = eyed3.load(file_name)
         audiofile.tag.artist = video_info['artist']
         audiofile.tag.album = video_info['album']
         audiofile.tag.title = video_info['track']
         audiofile.tag.save()
 
 def process_request():
-    with open("log.txt", "a") as myfile:
+    try:
+        # Read the message length (first 4 bytes).
+        text_length_bytes = sys.stdin.read(4)
 
-      try:
-          # Read the message length (first 4 bytes).
-          text_length_bytes = sys.stdin.read(4)
-          #myfile.write("text_length_bytes = sys.stdin.read(4) : " + str(text_length_bytes) + '\n')
-  
-          # Unpack message length as 4 byte integer.
-          text_length = struct.unpack('i', bytes(text_length_bytes, 'utf-8'))[0]
-          #myfile.write("text_length = struct.unpack('i', bytes(text_length_bytes, 'utf-8'))[0] : " + str(text_length) + "\n")
+        # Unpack message length as 4 byte integer.
+        text_length = struct.unpack('i', bytes(text_length_bytes, 'utf-8'))[0]
 
-          # Read the text (JSON object) of the message.
-          text = sys.stdin.read(text_length)
-          #myfile.write("text = sys.stdin.read(text_length) : " + str(text) + "\n")
-          
-          #TODO: convert text JSON format to URL string
-          json_text = json.loads(text)
-          myfile.write(json_text["text"] + "\n")
-          
-          # Return the URL
-          return json_text["text"]
-
-      except Exception as e:
-          myfile.write("Error: " + str(e) + "\n")
+        # Read the text (JSON object) of the message.
+        text = sys.stdin.read(text_length)
+        
+        #TODO: convert text JSON format to URL string
+        json_text = json.loads(text)
+        logger.info("Received message : " + json_text["text"])
+        
+        # Return the URL
+        return json_text["text"]
+    except Exception as e:
+        logger.error(str(e))
         
 
 def launch(video_url):
@@ -91,7 +96,7 @@ def launch(video_url):
 def send_message(message):
     text = unicode('{"text": "' + message + '"}', "utf-8")
     # Write message size.
-    sys.stdout.write(struct.pack('I', len(text)))
+    sys.stdout.write(struct.pack('I', len(text))) # TODO: Fix issue here
     # Write the message itself.
     sys.stdout.write(text)
     sys.stdout.flush()
