@@ -1,0 +1,19 @@
+2019-07-20 13:08:46,630 - youtube-dl-ext - INFO - Launching process on url : https://www.youtube.com/watch?v=21LGv8Cf0us
+2019-07-20 13:08:48,455 - youtube-dl-ext - DEBUG - [youtube] 21LGv8Cf0us: Downloading webpage
+2019-07-20 13:08:48,976 - youtube-dl-ext - DEBUG - [youtube] 21LGv8Cf0us: Downloading video info webpage
+2019-07-20 13:08:49,339 - youtube-dl-ext - DEBUG - [download] Destination: What A Wonderful World.webm
+2019-07-20 13:08:49,339 - youtube-dl-ext - DEBUG - [download]   0.0% of 2.04MiB at 333.33KiB/s ETA 00:06
+2019-07-20 13:08:49,339 - youtube-dl-ext - DEBUG - [download]   0.1% of 2.04MiB at 999.99KiB/s ETA 00:02
+2019-07-20 13:08:49,339 - youtube-dl-ext - DEBUG - [download]   0.3% of 2.04MiB at  2.28MiB/s ETA 00:00 
+2019-07-20 13:08:49,340 - youtube-dl-ext - DEBUG - [download]   0.7% of 2.04MiB at  3.66MiB/s ETA 00:00 
+2019-07-20 13:08:49,344 - youtube-dl-ext - DEBUG - [download]   1.5% of 2.04MiB at  3.78MiB/s ETA 00:00 
+2019-07-20 13:08:49,352 - youtube-dl-ext - DEBUG - [download]   3.0% of 2.04MiB at  4.10MiB/s ETA 00:00 
+2019-07-20 13:08:49,367 - youtube-dl-ext - DEBUG - [download]   6.1% of 2.04MiB at  4.00MiB/s ETA 00:00 
+2019-07-20 13:08:49,398 - youtube-dl-ext - DEBUG - [download]  12.2% of 2.04MiB at  4.02MiB/s ETA 00:00 
+2019-07-20 13:08:49,460 - youtube-dl-ext - DEBUG - [download]  24.5% of 2.04MiB at  4.02MiB/s ETA 00:00 
+2019-07-20 13:08:49,584 - youtube-dl-ext - DEBUG - [download]  49.0% of 2.04MiB at  4.03MiB/s ETA 00:00 
+2019-07-20 13:08:49,831 - youtube-dl-ext - DEBUG - [download]  98.0% of 2.04MiB at  4.04MiB/s ETA 00:00 
+2019-07-20 13:08:49,840 - youtube-dl-ext - DEBUG - [download] 100.0% of 2.04MiB at  4.05MiB/s ETA 00:00 
+2019-07-20 13:08:49,843 - youtube-dl-ext - DEBUG - [download] 100% of 2.04MiB in 00:00                  
+2019-07-20 13:08:49,868 - youtube-dl-ext - DEBUG - [ffmpeg] Destination: What A Wonderful World.mp3
+2019-07-20 13:08:57,937 - youtube-dl-ext - DEBUG - Deleting original file What A Wonderful World.webm (pass -k to keep)
