@@ -56,6 +56,8 @@ def get_download_options(info):
     }
     if info['track'] != None:
         options['outtmpl'] = '%(track)s.%(ext)s'
+    else:
+        options['outtmpl'] = '%(title)s.%(ext)s'
     return options
 
 def set_metadata(file_name, video_info):
@@ -88,12 +90,15 @@ def process_request():
 @supress_stdout
 def launch(video_url):
     # Download video and set correct name
-    logger.info("Launching process on url : " + video_url)
-    info = get_info(video_url)
-    
-    options = get_download_options(info)
-    with youtube_dl.YoutubeDL(options) as ydl:
-        ydl.download([video_url])
+    try:
+        logger.info("Launching process on url : " + video_url)
+        info = get_info(video_url)
+        
+        options = get_download_options(info)
+        with youtube_dl.YoutubeDL(options) as ydl:
+            ydl.download([video_url])
+    except:
+        logger.error(str(e))
 
     # Set artist in metadata of mp3 file    
     file_name = max(glob.iglob('*.[Mm][Pp]3'), key=os.path.getctime) # Latest mp3 file in folder
@@ -114,8 +119,8 @@ def send_message(message):
 def Main():
     # Wait for message from chrome extension
     video_url = str(process_request())
-    # Launch process on queue content
-    launch(video_url)
+    # Launch process on queue content and remove list tokens from url if video was in playlist
+    launch(video_url.split("&list",1)[0])
 
 if __name__ == '__main__':
   Main()
