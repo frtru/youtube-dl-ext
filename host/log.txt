@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/4690600/python-exception-message-capturing
+https://www.w3schools.com/python/python_json.asp

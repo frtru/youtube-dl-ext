@@ -1,3 +1,3 @@
 @echo off
 
-python "%~dp0/native-messaging-example-host" %*
+python "%~dp0/youtube-dl.py" %*
