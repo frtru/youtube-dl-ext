@@ -10,6 +10,14 @@ import time
 import datetime
 import logging
 import re
+import contextlib
+
+def supress_stdout(func):
+    def wrapper(*a, **ka):
+        with open(os.devnull, 'w') as devnull:
+            with contextlib.redirect_stdout(devnull):
+                func(*a, **ka)
+    return wrapper
 
 # Logger configuration
 logger = logging.getLogger('youtube-dl-ext')
@@ -43,7 +51,8 @@ def get_download_options(info):
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
             'preferredquality': '192',
-        }]
+        }],
+        'logger': logger
     }
     if info['track'] != None:
         options['outtmpl'] = '%(track)s.%(ext)s'
@@ -70,17 +79,18 @@ def process_request():
         
         #TODO: convert text JSON format to URL string
         json_text = json.loads(text)
-        logger.info("Received message : " + json_text["text"])
         
         # Return the URL
-        return json_text["text"]
+        return str(json_text["text"])
     except Exception as e:
         logger.error(str(e))
         
-
+@supress_stdout
 def launch(video_url):
     # Download video and set correct name
+    logger.info("Launching process on url : " + video_url)
     info = get_info(video_url)
+    
     options = get_download_options(info)
     with youtube_dl.YoutubeDL(options) as ydl:
         ydl.download([video_url])
@@ -90,7 +100,7 @@ def launch(video_url):
     set_metadata(file_name, info)
 
     # Move file to output folder
-    shutil.move(file_name, "C:/Dev/youtube-dl-ext/host/" + file_name)
+    shutil.move(file_name, "E:/music/" + file_name)
 
 # Helper function that sends a message to the webapp.
 def send_message(message):
@@ -102,14 +112,10 @@ def send_message(message):
     sys.stdout.flush()
 
 def Main():
-    #send_message('test')
     # Wait for message from chrome extension
-    video_url = process_request()
-    #print(video_url)
-
+    video_url = str(process_request())
     # Launch process on queue content
-    launch('https://www.youtube.com/watch?v=SFU1GeGFpzY')
-    send_message(video_url)
+    launch(video_url)
 
 if __name__ == '__main__':
   Main()
