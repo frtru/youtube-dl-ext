@@ -1,48 +1,25 @@
-import struct
-import sys
 import threading
 import queue
-import json
 import os
-import shutil
-import glob
-import time
-import datetime
-import logging
-import re
-import contextlib
-
-def supress_stdout(func):
-    def wrapper(*a, **ka):
-        with open(os.devnull, 'w') as devnull:
-            with contextlib.redirect_stdout(devnull):
-                func(*a, **ka)
-    return wrapper
-
-# Logger configuration
-logger = logging.getLogger('youtube-dl-ext')
-logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler("../logs/" + re.sub('-|:| ', '_', str(datetime.datetime.now())) + ".log")
-fh.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-logger.addHandler(fh)
-
 import youtube_dl
-try:
-    import eyed3
-except ImportError:
-    logger.warning('eyed3 couldn\'t be imported. Won\'t be able to add metadata to files.')
-
+from post_processors            import PostProcessorBuilder, PostProcessor
+from chrome_extension_messages  import *
+from mp3_metadata               import set_metadata
+from logger_helper              import log, log_errors 
+from decorators                 import supress_stdout
+  
 if sys.platform == "win32":
     import msvcrt
     msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
     msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
-def get_info(video_url):
+def yt_download(options, videos):
+    youtube_dl.YoutubeDL(options).download(videos)
+
+def yt_get_info(video_url):
     return youtube_dl.YoutubeDL({}).extract_info(video_url, download=False)
 
-def get_download_options(info):
+def yt_get_download_options(info):
     options = {
         'format': 'bestaudio/best',
         'postprocessors': [{
@@ -50,37 +27,13 @@ def get_download_options(info):
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-        'logger': logger
+        'logger': log
     }
     if info['track'] != None:
         options['outtmpl'] = '%(track)s.%(ext)s'
     else:
         options['outtmpl'] = '%(title)s.%(ext)s'
     return options
-
-def set_metadata(file_name, video_info):
-    if eyed3 != None:
-        logger.info("Setting metadata for " + file_name)
-        audiofile = eyed3.load(file_name)
-        audiofile.tag.artist = video_info['artist']
-        audiofile.tag.album = video_info['album']
-        audiofile.tag.title = video_info['track']
-        audiofile.tag.save()
-
-def process_request():
-    try:
-        # Read the message length (first 4 bytes).
-        text_length_bytes = sys.stdin.read(4)
-        # Unpack message length as 4 byte integer.
-        text_length = struct.unpack('i', bytes(text_length_bytes, 'utf-8'))[0]
-        # Read the text (JSON object) of the message.
-        text = sys.stdin.read(text_length)
-        #TODO: convert text JSON format to URL string
-        json_text = json.loads(text)
-        # Return the URL
-        return str(json_text["text"])
-    except Exception as e:
-        logger.error(str(e))
 
 def process_queue_thread(q):
     while not q.empty():
@@ -89,42 +42,38 @@ def process_queue_thread(q):
             launch(url)
         else:
             break
-    thread.task_done()
+    q.task_done()
 
 @supress_stdout
+@log_errors
 def launch(video_url):
-    # Download video and set correct name
-    try:
-        logger.info("Launching process on url : " + video_url)
-        info = get_info(video_url)
-        options = get_download_options(info)
-        with youtube_dl.YoutubeDL(options) as ydl:
-            ydl.download([video_url])
-    except Exception as e:
-        logger.error(str(e))
-    # Set artist in metadata of mp3 file    
-    file_name = max(glob.iglob('*.[Mm][Pp]3'), key=os.path.getctime) # Latest mp3 file in folder
-    set_metadata(file_name, info)
-    # Move file to output folder
-    shutil.move(file_name, str(os.environ['YOUTUBE_DL_EXT_HOST_PATH']) + file_name)
-    logger.info("Moved file to output folder")
+    log.info("Launching process on url : " + video_url)
+    # Getting the metadata from the video on youtube
+    info = yt_get_info(video_url)
+    # Deducing the options based on the information available in the metadata
+    options = yt_get_download_options(info)
+    # Actually download the file(s)
+    yt_download(options, [video_url])
 
-# Helper function that sends a message to the webapp.
-def send_message(message):
-    text = unicode('{"text": "' + message + '"}', "utf-8")
-    # Write message size.
-    sys.stdout.write(struct.pack('I', len(text))) # TODO: Fix issue here
-    # Write the message itself.
-    sys.stdout.write(text)
-    sys.stdout.flush()
+    # Package parameters into a map to pass to the post-processor
+    params = {
+        'info' : info,
+        'options' : options,
+        'video_url' : video_url
+    }
+    # Apply other tasks 
+    pp = PostProcessorBuilder.build_post_processor(params)
+    pp.run()
+
 
 def Main():
+    PostProcessorBuilder.set_enabled_post_process(sys.argv)
     q = queue.Queue()
     thread = threading.Thread(target=process_queue_thread, args=(q,)) # ',' is needed here to make it iterable
-    thread.daemon = True
+    #thread.daemon = True
     while True:
         # Wait for message from chrome extension
-        video_url = str(process_request())
+        video_url = wait_and_decode_message()
         q.put(video_url.split("&list",1)[0])
         if not thread.isAlive():
             thread.start()
