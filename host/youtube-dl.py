@@ -106,7 +106,7 @@ def launch(video_url):
     file_name = max(glob.iglob('*.[Mm][Pp]3'), key=os.path.getctime) # Latest mp3 file in folder
     set_metadata(file_name, info)
     # Move file to output folder
-    shutil.move(file_name, "E:/music/" + file_name) # TODO: Remove hardcoded path here
+    shutil.move(file_name, str(os.environ['YOUTUBE_DL_EXT_HOST_PATH']) + file_name)
     logger.info("Moved file to output folder")
 
 # Helper function that sends a message to the webapp.
