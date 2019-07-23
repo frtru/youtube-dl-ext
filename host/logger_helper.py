@@ -1,6 +1,7 @@
 import logging
 import datetime
 import re
+import traceback
 
 
 def initialize_logger():
@@ -30,6 +31,6 @@ def log_errors(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except Exception as e:
-            log.error(str(e))
+        except Exception:
+            log.error(traceback.format_exc())
     return wrapper
