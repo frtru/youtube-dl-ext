@@ -6,16 +6,16 @@ from logger_helper import log, log_errors
 
 @log_errors
 def wait_and_decode_message():
-        # Read the message length (first 4 bytes).
-        text_length_bytes = sys.stdin.read(4)
-        # Unpack message length as 4 byte integer.
-        text_length = struct.unpack('i', bytes(text_length_bytes, 'utf-8'))[0]
-        # Read the text (JSON object) of the message.
-        text = sys.stdin.read(text_length)
-        # Convert text JSON format to URL string
-        json_text = json.loads(text)
-        # Return the URL
-        return json_text['text']
+    # Read the message length (first 4 bytes).
+    text_length_bytes = sys.stdin.read(4)
+    # Unpack message length as 4 byte integer.
+    text_length = struct.unpack('i', bytes(text_length_bytes, 'utf-8'))[0]
+    # Read the text (JSON object) of the message.
+    text = sys.stdin.read(text_length)
+    # Convert text JSON format to URL string
+    json_text = json.loads(text)
+    # Return the URL
+    return json_text['text']
 
 
 # Helper function that sends a message to the webapp.
