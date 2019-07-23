@@ -13,8 +13,8 @@ try:
         log.info("Saved metadata to file")
 
 except ImportError:
-    log.warning('EasyID3 couldn\'t be imported. Won\'t be able to add metadata to files.')
+    log.warning('EasyID3 couldn\'t be imported. '
+                'Won\'t be able to add metadata to files.')
+
     def set_metadata(file_name, video_info):
         pass
-
-    

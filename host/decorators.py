@@ -1,6 +1,7 @@
 import os
 import contextlib
 
+
 def supress_stdout(func):
     def wrapper(*args, **kwargs):
         with open(os.devnull, 'w') as devnull:
