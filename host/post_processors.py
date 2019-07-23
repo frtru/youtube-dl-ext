@@ -14,9 +14,7 @@ def save_metadata_to_file(params):
 
 
 def move_mp3_file_to_custom_folder(params):
-    file_name = params['file_name']  
-    log.debug(file_name)
-    log.debug(str(os.environ['YOUTUBE_DL_EXT_HOST_PATH']))
+    file_name = params['file_name']
     # Move file to output folder
     shutil.move(file_name, str(os.environ['YOUTUBE_DL_EXT_HOST_PATH']) + file_name)
     log.info("Moved file to output folder")
@@ -39,7 +37,6 @@ class PostProcessor:
     @log_errors
     def run(self):
         for handler in self.handlers:
-            log.debug(len(self.handlers))
             handler(self.params)
 
 class PostProcessorBuilder:
@@ -57,12 +54,11 @@ class PostProcessorBuilder:
         for handler_name in enabled_handlers_list:
             # If process is recognized
             if handler_name in PostProcessorBuilder.recognized_handlers:
-                log.debug(handler_name)
                 handler = PostProcessorBuilder.recognized_handlers[handler_name]
                 PostProcessorBuilder.handlers_enabled.append(handler)
     
     @classmethod
-    def build_post_processor(cls, params):
+    def build(cls, params):
         proc = PostProcessor(PostProcessorBuilder.handlers_enabled)
         proc.set_params(params)
         return proc

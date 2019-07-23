@@ -62,7 +62,7 @@ def launch(video_url):
         'video_url' : video_url
     }
     # Apply other tasks 
-    pp = PostProcessorBuilder.build_post_processor(params)
+    pp = PostProcessorBuilder.build(params)
     pp.run()
 
 
@@ -70,7 +70,6 @@ def Main():
     PostProcessorBuilder.set_enabled_post_process(sys.argv)
     q = queue.Queue()
     thread = threading.Thread(target=process_queue_thread, args=(q,)) # ',' is needed here to make it iterable
-    #thread.daemon = True
     while True:
         # Wait for message from chrome extension
         video_url = wait_and_decode_message()
