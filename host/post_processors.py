@@ -7,6 +7,11 @@ from logger_helper import log, log_errors
 
 # Handlers/Post-process definition as functions
 def save_metadata_to_file(params):
+    if params.get('file_name') is None or params.get('info') is None:
+        log.error('Cannot fetch music file to save metadata. \'file_name\' or '
+                  '\'info\' is None. file_name=' +
+                  str(params.get('file_name')))
+        return
     file_name = params['file_name']
     info = params['info']
 
@@ -14,7 +19,11 @@ def save_metadata_to_file(params):
     set_metadata(file_name, info)
 
 
-def move_mp3_file_to_custom_folder(params):
+def move_music_file_to_custom_folder(params):
+    if params.get('file_name') is None:
+        log.error('Cannot fetch music file to save metadata. file_name=' +
+                  str(params.get('file_name')))
+        return
     file_name = params['file_name']
     # Move file to output folder
     output_location = str(os.environ['YOUTUBE_DL_EXT_HOST_PATH']) + file_name
@@ -29,13 +38,16 @@ class PostProcessor:
 
     # NOTE: This needs to be called after the download is done
     @staticmethod
-    def get_latest_mp3_filename():
-        # Latest mp3 file in folder
-        return max(glob.iglob('*.[Mm][Pp]3'), key=os.path.getctime)
+    def get_latest_music_filename():
+        # Latest music file in folder
+        try:
+            return max(glob.iglob('*.[Mm][Pp4][Aa3]'), key=os.path.getctime)
+        except ValueError:
+            return None
 
     def set_params(self, params):
         self.params = params
-        self.params['file_name'] = PostProcessor.get_latest_mp3_filename()
+        self.params['file_name'] = PostProcessor.get_latest_music_filename()
 
     @log_errors
     def run(self):
@@ -46,7 +58,8 @@ class PostProcessor:
 class PostProcessorBuilder:
     handlers_enabled = []
     recognized_handlers = {
-        'move_mp3': move_mp3_file_to_custom_folder,  # Must always be last
+        # 'move_to_output_folder' must always be last
+        'move_to_output_folder': move_music_file_to_custom_folder,
         'set_metadata': save_metadata_to_file
     }
 

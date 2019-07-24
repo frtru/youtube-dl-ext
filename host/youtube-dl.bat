@@ -1,3 +1,3 @@
 @echo off
 
-python "%~dp0/youtube-dl.py" set_metadata move_mp3
+python "%~dp0/youtube-dl.py" move_to_output_folder

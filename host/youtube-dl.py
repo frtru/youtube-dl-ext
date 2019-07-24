@@ -27,8 +27,9 @@ def yt_get_download_options(info):
         'format': 'bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
+            'preferredcodec': 'm4a'
+        }, {
+            'key': 'FFmpegMetadata'
         }],
         'logger': log
     }
