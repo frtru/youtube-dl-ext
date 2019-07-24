@@ -72,17 +72,16 @@ def launch(video_url):
     pp.run()
 
 
+@log_errors
 def Main():
     PostProcessorBuilder.set_enabled_post_process(sys.argv)
     q = queue.Queue()
-    # ',' is needed in the following arguments to make it iterable
-    thread = threading.Thread(target=process_queue_thread, args=(q,))
     while True:
         # Wait for message from chrome extension
         video_url = wait_and_decode_message()
         q.put(video_url.split("&list", 1)[0])
-        if not thread.isAlive():
-            thread.start()
+        # ',' is needed in the following arguments to make it iterable
+        threading.Thread(target=process_queue_thread, args=(q,)).start()
 
 if __name__ == '__main__':
     Main()
